@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>de.aleks</groupId>
-    <artifactId>DiscordBotTemplate</artifactId>
+    <artifactId>DcBHelper</artifactId>
     <version>1.0-SNAPSHOT</version>
 
     <properties>
@@ -18,7 +18,12 @@
         <dependency>
             <groupId>net.dv8tion</groupId>
             <artifactId>JDA</artifactId>
-            <version>5.0.0-beta.19</version>
+            <version>5.0.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.reflections</groupId>
+            <artifactId>reflections</artifactId>
+            <version>0.10.2</version>
         </dependency>
     </dependencies>
 

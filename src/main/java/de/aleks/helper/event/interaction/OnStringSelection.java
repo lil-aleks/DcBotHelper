@@ -1,0 +1,14 @@
+package de.aleks.helper.event.interaction;
+
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.METHOD)
+public @interface OnStringSelection
+{
+    String id();
+    String option() default "";
+}

@@ -36,3 +36,6 @@ build/
 
 ### Mac OS ###
 .DS_Store
+
+### My Tests ###
+/src/main/java/de/aleks/helper/trys/
