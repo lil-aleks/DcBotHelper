@@ -1,7 +1,7 @@
-package de.aleks.helper.main;
+package com.bothelper.main;
 
-import de.aleks.helper.event.EventHandler;
-import de.aleks.helper.event.interaction.OnCommand;
+import com.bothelper.event.interaction.OnCommand;
+import com.bothelper.event.EventHandler;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
@@ -10,7 +10,6 @@ import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.ChunkingFilter;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
-import net.dv8tion.jda.internal.utils.JDALogger;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;

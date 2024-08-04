@@ -1,4 +1,4 @@
-package de.aleks.helper.event.interaction;
+package com.bothelper.event.interaction;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -7,7 +7,8 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
-public @interface OnEntitySelection
+public @interface OnStringSelection
 {
     String id();
+    String option() default "";
 }

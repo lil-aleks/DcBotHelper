@@ -38,4 +38,4 @@ build/
 .DS_Store
 
 ### My Tests ###
-/src/main/java/de/aleks/helper/trys/
+/src/main/java/com/bothelper/

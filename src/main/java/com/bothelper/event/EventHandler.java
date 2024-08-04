@@ -1,17 +1,14 @@
-package de.aleks.helper.event;
+package com.bothelper.event;
 
-import de.aleks.helper.event.interaction.*;
-import net.dv8tion.jda.api.events.guild.invite.GuildInviteCreateEvent;
+import com.bothelper.event.interaction.*;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.EntitySelectInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.StringSelectInteractionEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import net.dv8tion.jda.api.requests.Route;
 import org.jetbrains.annotations.NotNull;
 import org.reflections.Reflections;
-import org.reflections.scanners.MethodAnnotationsScanner;
 import org.reflections.scanners.Scanners;
 import org.reflections.util.*;
 
@@ -100,16 +97,7 @@ public class EventHandler extends ListenerAdapter
                 continue;
             try
             {
-                if (annotation.option().equals(""))
-                {
-                    if (Modifier.isStatic(method.getModifiers()))
-                    {
-                        method.invoke(null, event);
-                    } else
-                    {
-                        System.out.println("\u001B[31mPlease make this method static. " + method.getName() + "() in " + method.getDeclaringClass() + "\u001B[0m");
-                    }
-                } else if (annotation.option().equals(event.getSelectedOptions().get(0).getValue()))
+                if (annotation.option().equals("") || annotation.option().equals(event.getSelectedOptions().get(0).getValue()))
                 {
                     if (Modifier.isStatic(method.getModifiers()))
                     {
