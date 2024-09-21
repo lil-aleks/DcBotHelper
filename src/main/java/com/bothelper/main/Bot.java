@@ -1,15 +1,20 @@
 package com.bothelper.main;
 
+import com.bothelper.event.interaction.CmdOption;
 import com.bothelper.event.interaction.OnCommand;
 import com.bothelper.event.EventHandler;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
+import net.dv8tion.jda.api.entities.Activity;
+import net.dv8tion.jda.api.interactions.commands.Command;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
+import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.ChunkingFilter;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
+import net.dv8tion.jda.api.utils.data.DataObject;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -27,11 +32,6 @@ public class Bot
     public static JDA bot;
     public static String token;
 
-    public static void main(String[] args) throws InterruptedException
-    {
-        startBot("");
-    }
-
     public static void startBot(String token) throws InterruptedException
     {
         Bot.token = token;
@@ -43,7 +43,7 @@ public class Bot
 
         bot = JDABuilder.createDefault(token)
                 .setStatus(OnlineStatus.ONLINE) // optional
-                //      .setActivity(Activity.streaming(status,streamurl))  Activity optional
+                .setActivity(Activity.playing("nothing")) //optional
                 .setChunkingFilter(ChunkingFilter.ALL)
                 .setMemberCachePolicy(MemberCachePolicy.ALL)
                 .enableIntents(
@@ -65,7 +65,19 @@ public class Bot
         for (Method method : annotatedMethods)
         {
             OnCommand annotation = method.getAnnotation(OnCommand.class);
-            data.add(Commands.slash(annotation.name(), annotation.description()));
+            if (annotation.options().length == 0)
+            {
+                data.add(Commands.slash(annotation.name(), annotation.description()));
+            } else
+            {
+                List<OptionData> options = new ArrayList<>();
+                for (CmdOption option : annotation.options())
+                {
+                    options.add(new OptionData(option.type(),option.name(),option.description(),option.required()));
+                }
+                data.add(Commands.slash(annotation.name(), annotation.description()).addOptions(options));
+            }
+
         }
         bot.updateCommands().addCommands(
                 data

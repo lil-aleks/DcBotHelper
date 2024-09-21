@@ -7,12 +7,14 @@ import net.dv8tion.jda.api.events.interaction.component.EntitySelectInteractionE
 import net.dv8tion.jda.api.events.interaction.component.StringSelectInteractionEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import org.jetbrains.annotations.NotNull;
 import org.reflections.Reflections;
 import org.reflections.scanners.Scanners;
 import org.reflections.util.*;
 
 import java.lang.reflect.*;
+import java.util.List;
 import java.util.Set;
 
 public class EventHandler extends ListenerAdapter
@@ -44,18 +46,13 @@ public class EventHandler extends ListenerAdapter
             OnCommand annotation = method.getAnnotation(OnCommand.class);
             if (!annotation.name().equals(event.getName()))
                 continue;
+
             try
             {
-                if (Modifier.isStatic(method.getModifiers()))
-                {
-                    method.invoke(null, event);
-                } else
-                {
-                    System.out.println("\u001B[31mPlease make this method static. " + method.getName() + "() in " + method.getDeclaringClass() + "\u001B[0m");
-                }
-            } catch (Exception e)
+                method.invoke(null, event);
+            } catch (IllegalArgumentException | IllegalAccessException | InvocationTargetException e)
             {
-                e.printStackTrace();
+                throw new RuntimeException("\u001B[31mPlease make this method static. " + method.getName() + "() in " + method.getDeclaringClass() + "\u001B[0m", e);
             }
             return;
 
@@ -73,16 +70,10 @@ public class EventHandler extends ListenerAdapter
 
             try
             {
-                if (Modifier.isStatic(method.getModifiers()))
-                {
-                    method.invoke(null, event);
-                } else
-                {
-                    System.out.println("\u001B[31mPlease make this method static. " + method.getName() + "() in " + method.getDeclaringClass() + "\u001B[0m");
-                }
-            } catch (Exception e)
+                method.invoke(null, event);
+            } catch (IllegalArgumentException | IllegalAccessException | InvocationTargetException e)
             {
-                e.printStackTrace();
+                throw new RuntimeException("\u001B[31mPlease make this method static. " + method.getName() + "() in " + method.getDeclaringClass() + "\u001B[0m", e);
             }
         }
     }
@@ -97,19 +88,13 @@ public class EventHandler extends ListenerAdapter
                 continue;
             try
             {
-                if (annotation.option().equals("") || annotation.option().equals(event.getSelectedOptions().get(0).getValue()))
+                if (annotation.option().isEmpty() || annotation.option().equals(event.getSelectedOptions().get(0).getValue()))
                 {
-                    if (Modifier.isStatic(method.getModifiers()))
-                    {
-                        method.invoke(null, event);
-                    } else
-                    {
-                        System.out.println("\u001B[31mPlease make this method static. " + method.getName() + "() in " + method.getDeclaringClass() + "\u001B[0m");
-                    }
+                    method.invoke(null, event);
                 }
-            } catch (Exception e)
+            } catch (IllegalArgumentException | IllegalAccessException | InvocationTargetException e)
             {
-                e.printStackTrace();
+                throw new RuntimeException("\u001B[31mPlease make this method static. " + method.getName() + "() in " + method.getDeclaringClass() + "\u001B[0m", e);
             }
         }
     }
@@ -124,16 +109,10 @@ public class EventHandler extends ListenerAdapter
                 continue;
             try
             {
-                if (Modifier.isStatic(method.getModifiers()))
-                {
-                    method.invoke(null, event);
-                } else
-                {
-                    System.out.println("\u001B[31mPlease make this method static. " + method.getName() + "() in " + method.getDeclaringClass() + "\u001B[0m");
-                }
-            } catch (Exception e)
+                method.invoke(null, event);
+            } catch (IllegalArgumentException | IllegalAccessException | InvocationTargetException e)
             {
-                e.printStackTrace();
+                throw new RuntimeException("\u001B[31mPlease make this method static. " + method.getName() + "() in " + method.getDeclaringClass() + "\u001B[0m", e);
             }
         }
     }
@@ -149,18 +128,12 @@ public class EventHandler extends ListenerAdapter
             {
                 if (annotation.message().equals("") || annotation.message().equalsIgnoreCase(event.getMessage().getContentStripped()))
                 {
-                    if (Modifier.isStatic(method.getModifiers()))
-                    {
-                        method.invoke(null, event);
-                    } else
-                    {
-                        System.out.println("\u001B[31mPlease make this method static. " + method.getName() + "() in " + method.getDeclaringClass() + "\u001B[0m");
-                    }
+                    method.invoke(null, event);
                 }
 
-            } catch (Exception e)
+            } catch (IllegalArgumentException | IllegalAccessException | InvocationTargetException e)
             {
-                e.printStackTrace();
+                throw new RuntimeException("\u001B[31mPlease make this method static. " + method.getName() + "() in " + method.getDeclaringClass() + "\u001B[0m", e);
             }
         }
     }
