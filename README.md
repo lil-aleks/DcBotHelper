@@ -1,8 +1,8 @@
 # DcBotHelper
 This will help you to build your own Discord bot faster!
-## Implement to your project
+## 🛠️ Implement to your project
 ``TODO``
-## Get started
+## 🚀 Get started
 When creating a bot at the [Discord Developer Portal](https://discord.com/developers), please don´t forget to toggle every privileged gateway intent on.
 
 ### Starting the bot
@@ -33,8 +33,8 @@ JDA bot = JDABuilder.createDefault(YOUR_TOKEN_HERE) // Enter your token
     )
     .build().awaitReady();
 ```
-### Events
-Here are some examples how to make some Events.
+### Examples
+Here are some examples how to make some events.
 #### Slash-Command interactions:
 Add `@OnCommand` with a `name` and `description` to a `public static` method and add `SlashCommandInteractionEvent event` as the parameter:
 ```java
@@ -94,4 +94,6 @@ public static void responseOnHello(MessageReceivedEvent event)
 }
 ```
 This methods will execute every time someone sends a message.
+#### More Events
+A hole class full of all the events with examples which are supported can be found here: [MainTest.java](https://github.com/lil-aleks/DcBotHelper/blob/main/src/test/java/MainTest.java)
 ### MORE SOON.

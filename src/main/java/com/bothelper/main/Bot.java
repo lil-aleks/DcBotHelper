@@ -73,7 +73,7 @@ public class Bot
                 List<OptionData> options = new ArrayList<>();
                 for (CmdOption option : annotation.options())
                 {
-                    options.add(new OptionData(option.type(),option.name(),option.description(),option.required()));
+                    options.add(new OptionData(option.type(), option.name(), option.description(), option.required()));
                 }
                 data.add(Commands.slash(annotation.name(), annotation.description()).addOptions(options));
             }
