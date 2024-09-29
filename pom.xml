@@ -7,8 +7,18 @@
     <groupId>com.bothelper</groupId>
     <artifactId>DcBotHelper</artifactId>
     <version>1.0.0-alpha</version>
-    <packaging>jar</packaging>
     <name>DcBotHelper</name>
+
+    <packaging>jar</packaging>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-site-plugin</artifactId>
+                <version>3.12.1</version>
+            </plugin>
+        </plugins>
+    </build>
 
     <properties>
         <maven.compiler.source>11</maven.compiler.source>
