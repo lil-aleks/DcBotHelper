@@ -21,7 +21,12 @@ import org.reflections.scanners.Scanners;
 import org.reflections.util.*;
 
 import java.lang.reflect.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class EventHandler extends ListenerAdapter
 {
@@ -46,6 +51,27 @@ public class EventHandler extends ListenerAdapter
         messageReceivedMethods = reflections.getMethodsAnnotatedWith(OnMessageReceived.class);
         modalMethods = reflections.getMethodsAnnotatedWith(OnModal.class);
         guildMethods = reflections.getMethodsAnnotatedWith(OnGuild.class);
+    }
+
+    public String[] withVariables(String methodId, String interactionId)
+    {
+        if (!methodId.contains("{"))
+            return null;
+        if (methodId.replaceAll("\\{.*?}", "").equals(interactionId.replaceAll("\\{.*?}", "")))
+        {
+            Pattern pattern = Pattern.compile("\\{(.*?)}");
+            Matcher matcher = pattern.matcher(interactionId);
+
+            List<String> matches = new ArrayList<>();
+
+            while (matcher.find())
+            {
+                matches.add(matcher.group(1));
+            }
+
+            return matches.toArray(new String[0]);
+        }
+        return null;
     }
 
 
@@ -76,15 +102,22 @@ public class EventHandler extends ListenerAdapter
         for (Method method : buttonMethods)
         {
             OnButton annotation = method.getAnnotation(OnButton.class);
-            if (!annotation.id().equals(event.getButton().getId()))
+            String[] args = withVariables(annotation.id(), event.getButton().getId());
+            if (!annotation.id().equals(event.getButton().getId()) && args == null)
                 continue;
-
             try
             {
-                method.invoke(null, event);
+                if (args.length == 1)
+                {
+                    method.invoke(null, event, args[0]);
+                } else
+                {
+                    method.invoke(null, event, args);
+                }
+
             } catch (IllegalArgumentException | IllegalAccessException | InvocationTargetException e)
             {
-                throw new RuntimeException("\u001B[31mPlease make this method static. " + method.getName() + "() in " + method.getDeclaringClass() + "\u001B[0m", e);
+                throw new RuntimeException("\u001B[31mPlease make this method static. " + method.getName() + "() in " + method.getDeclaringClass() + ", or check for the parameters.\u001B[0m", e);
             }
         }
     }
@@ -95,13 +128,20 @@ public class EventHandler extends ListenerAdapter
         for (Method method : stringSelectionMethods)
         {
             OnStringSelection annotation = method.getAnnotation(OnStringSelection.class);
-            if (!annotation.id().equals(event.getComponent().getId()))
+            String[] args = withVariables(annotation.id(), event.getComponent().getId());
+            if (!annotation.id().equals(event.getComponent().getId()) && args == null)
                 continue;
             try
             {
                 if (annotation.option().isEmpty() || annotation.option().equals(event.getSelectedOptions().get(0).getValue()))
                 {
-                    method.invoke(null, event);
+                    if (args.length == 1)
+                    {
+                        method.invoke(null, event, args[0]);
+                    } else
+                    {
+                        method.invoke(null, event, args);
+                    }
                 }
             } catch (IllegalArgumentException | IllegalAccessException | InvocationTargetException e)
             {
@@ -116,11 +156,18 @@ public class EventHandler extends ListenerAdapter
         for (Method method : entitySelectionMethods)
         {
             OnEntitySelection annotation = method.getAnnotation(OnEntitySelection.class);
-            if (!annotation.id().equals(event.getComponent().getId()))
+            String[] args = withVariables(annotation.id(), event.getComponent().getId());
+            if (!annotation.id().equals(event.getComponent().getId()) && args == null)
                 continue;
             try
             {
-                method.invoke(null, event);
+                if (args.length == 1)
+                {
+                    method.invoke(null, event, args[0]);
+                } else
+                {
+                    method.invoke(null, event, args);
+                }
             } catch (IllegalArgumentException | IllegalAccessException | InvocationTargetException e)
             {
                 throw new RuntimeException("\u001B[31mPlease make this method static. " + method.getName() + "() in " + method.getDeclaringClass() + "\u001B[0m", e);
@@ -135,13 +182,18 @@ public class EventHandler extends ListenerAdapter
         {
             OnMessageReceived annotation = method.getAnnotation(OnMessageReceived.class);
 
+            String[] args = withVariables(annotation.message(), event.getMessage().getContentStripped());
+            if (!(annotation.message().isEmpty() || annotation.message().equalsIgnoreCase(event.getMessage().getContentStripped())) && args == null)
+                continue;
             try
             {
-                if (annotation.message().isEmpty() || annotation.message().equalsIgnoreCase(event.getMessage().getContentStripped()))
+                if (args.length == 1)
                 {
-                    method.invoke(null, event);
+                    method.invoke(null, event, args[0]);
+                } else
+                {
+                    method.invoke(null, event, args);
                 }
-
             } catch (IllegalArgumentException | IllegalAccessException | InvocationTargetException e)
             {
                 throw new RuntimeException("\u001B[31mPlease make this method static. " + method.getName() + "() in " + method.getDeclaringClass() + "\u001B[0m", e);
@@ -156,12 +208,19 @@ public class EventHandler extends ListenerAdapter
         {
             OnModal annotation = method.getAnnotation(OnModal.class);
 
-            if (!annotation.id().equals(event.getModalId()))
+            String[] args = withVariables(annotation.id(), event.getModalId());
+            if (!annotation.id().equals(event.getModalId()) && args == null)
                 continue;
 
             try
             {
-                method.invoke(null, event);
+                if (args.length == 1)
+                {
+                    method.invoke(null, event, args[0]);
+                } else
+                {
+                    method.invoke(null, event, args);
+                }
             } catch (IllegalArgumentException | IllegalAccessException | InvocationTargetException e)
             {
                 throw new RuntimeException("\u001B[31mPlease make this method static. " + method.getName() + "() in " + method.getDeclaringClass() + "\u001B[0m", e);

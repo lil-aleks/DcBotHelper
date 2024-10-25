@@ -6,19 +6,35 @@
 
     <groupId>com.bothelper</groupId>
     <artifactId>DcBotHelper</artifactId>
-    <version>1.0.0-alpha</version>
+    <version>1.1.0-alpha</version>
+
     <name>DcBotHelper</name>
+    <description>A library that helps you to create Discord bots much faster than usual.</description>
+    <url>https://github.com/lil-aleks/DcBotHelper</url>
 
     <packaging>jar</packaging>
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-site-plugin</artifactId>
-                <version>3.12.1</version>
-            </plugin>
-        </plugins>
-    </build>
+
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <name>Aleksander Iwanowski</name>
+            <email>olekiwan4@gmail.com</email>
+            <organization>com.github.lil-aleks</organization>
+            <organizationUrl>https://github.com/lil-aleks</organizationUrl>
+        </developer>
+    </developers>
+
+    <scm>
+        <connection>scm:git:git://github.com/lil-aleks/DcBotHelper.git</connection>
+        <developerConnection>scm:git:ssh://github.com:lil-aleks/DcBotHelper.git</developerConnection>
+        <url>https://github.com/lil-aleks/DcBotHelper</url>
+    </scm>
 
     <properties>
         <maven.compiler.source>11</maven.compiler.source>
