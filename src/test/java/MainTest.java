@@ -22,6 +22,7 @@ import net.dv8tion.jda.api.events.interaction.component.StringSelectInteractionE
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
+import net.dv8tion.jda.api.interactions.components.buttons.Button;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
@@ -196,5 +197,31 @@ public class MainTest
         event.getGuild().getOwner().getUser().openPrivateChannel().queue(
                 privateChannel -> privateChannel.sendMessage("Sorry for not meeting your expectations.").queue()
         );
+    }
+
+    @OnCommand(name = "view", description = "view somebody", options = {
+            @CmdOption(name = "user", description = "view a user", type = OptionType.USER)
+    })
+    public static void viewCommand(SlashCommandInteractionEvent event)
+    {
+        Button kickButton = Button.danger("view-kick-{" +
+                        event.getOption("user").getAsMember().getId() + "}",
+                "Kick");
+        event.reply("\"Informations about " +
+                event.getOption("user").getAsMember().getEffectiveName() +
+                ".\"").addActionRow(kickButton).setEphemeral(true).queue();
+    }
+
+    @OnButton(id = "view-kick-{}")
+    public static void kickViewedMember(ButtonInteractionEvent event, String memberId)
+    {
+        event.getGuild().getMemberById(memberId).kick().queue();
+        event.reply("Member is kicked").setEphemeral(true).queue();
+    }
+
+    @OnModal(id = "something-{}-{}")
+    public static void something(ModalInteractionEvent event, String[] params) {
+        String firstCurlyBraces = params[0]; // this should be the content of the first curly braces
+        String secondCurlyBraces = params[1]; // this should be the content of the second curly braces
     }
 }
