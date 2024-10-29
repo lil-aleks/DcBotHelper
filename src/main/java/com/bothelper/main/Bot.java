@@ -59,28 +59,5 @@ public class Bot
                         new EventHandler()
                 )
                 .build().awaitReady();
-
-        List<SlashCommandData> data = new ArrayList<>();
-        Set<Method> annotatedMethods = EventHandler.reflections.getMethodsAnnotatedWith(OnCommand.class);
-        for (Method method : annotatedMethods)
-        {
-            OnCommand annotation = method.getAnnotation(OnCommand.class);
-            if (annotation.options().length == 0)
-            {
-                data.add(Commands.slash(annotation.name(), annotation.description()));
-            } else
-            {
-                List<OptionData> options = new ArrayList<>();
-                for (CmdOption option : annotation.options())
-                {
-                    options.add(new OptionData(option.type(), option.name(), option.description(), option.required()));
-                }
-                data.add(Commands.slash(annotation.name(), annotation.description()).addOptions(options));
-            }
-
-        }
-        bot.updateCommands().addCommands(
-                data
-        ).queue();
     }
 }

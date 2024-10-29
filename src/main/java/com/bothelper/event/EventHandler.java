@@ -14,7 +14,11 @@ import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.EntitySelectInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.StringSelectInteractionEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.events.session.ReadyEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.interactions.commands.build.Commands;
+import net.dv8tion.jda.api.interactions.commands.build.OptionData;
+import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
 import org.jetbrains.annotations.NotNull;
 import org.reflections.Reflections;
 import org.reflections.scanners.Scanners;
@@ -74,6 +78,31 @@ public class EventHandler extends ListenerAdapter
         return null;
     }
 
+    @Override
+    public void onReady(@NotNull ReadyEvent event)
+    {
+        List<SlashCommandData> data = new ArrayList<>();
+        for (Method method : commandMethods)
+        {
+            OnCommand annotation = method.getAnnotation(OnCommand.class);
+            if (annotation.options().length == 0)
+            {
+                data.add(Commands.slash(annotation.name(), annotation.description()));
+            } else
+            {
+                List<OptionData> options = new ArrayList<>();
+                for (CmdOption option : annotation.options())
+                {
+                    options.add(new OptionData(option.type(), option.name(), option.description(), option.required()));
+                }
+                data.add(Commands.slash(annotation.name(), annotation.description()).addOptions(options));
+            }
+
+        }
+        event.getJDA().updateCommands().addCommands(
+                data
+        ).queue();
+    }
 
     @Override
     public void onSlashCommandInteraction(@NotNull SlashCommandInteractionEvent event)
