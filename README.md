@@ -62,7 +62,7 @@ Here are some examples on how to listen to events.
 #### Slash-Commands:
 Add `@OnCommand` with a `name` and `description` parameter to a `public static` method and add the `SlashCommandInteractionEvent event` parameter:
 ```java
-// /ping command that responds with 'Pong!
+// /ping command that responds with 'Pong'!
 @OnCommand(name = "ping", description = "ping the bot")
 public static void example(SlashCommandInteractionEvent event)
 {
