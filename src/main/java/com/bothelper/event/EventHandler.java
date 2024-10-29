@@ -45,6 +45,7 @@ public class EventHandler extends ListenerAdapter
     public final Set<Method> messageReceivedMethods;
     public final Set<Method> modalMethods;
     public final Set<Method> guildMethods;
+    public final Set<Method> readyMethods;
 
     public EventHandler()
     {
@@ -55,6 +56,7 @@ public class EventHandler extends ListenerAdapter
         messageReceivedMethods = reflections.getMethodsAnnotatedWith(OnMessageReceived.class);
         modalMethods = reflections.getMethodsAnnotatedWith(OnModal.class);
         guildMethods = reflections.getMethodsAnnotatedWith(OnGuild.class);
+        readyMethods = reflections.getMethodsAnnotatedWith(OnReady.class);
     }
 
     public String[] withVariables(String methodId, String interactionId)
@@ -102,6 +104,17 @@ public class EventHandler extends ListenerAdapter
         event.getJDA().updateCommands().addCommands(
                 data
         ).queue();
+
+        for (Method method : readyMethods)
+        {
+            try
+            {
+                method.invoke(null, event);
+            } catch (IllegalArgumentException | IllegalAccessException | InvocationTargetException e)
+            {
+                throw new RuntimeException("\u001B[31mPlease make this method static. " + method.getName() + "() in " + method.getDeclaringClass() + "\u001B[0m", e);
+            }
+        }
     }
 
     @Override
