@@ -1,6 +1,7 @@
 import com.bothelper.event.interaction.*;
 import com.bothelper.main.Bot;
 import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.channel.Channel;
@@ -29,6 +30,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.EnumSet;
+import java.util.concurrent.TimeUnit;
 
 public class MainTest
 {
@@ -39,7 +41,7 @@ public class MainTest
         {
             token = reader.readLine();
         }
-        Bot.startBot(token);
+        Bot.startBot(token, Activity.of(Activity.ActivityType.PLAYING, "with DBH 🤖"));
     }
 
     // /ping command which response with "Pong"!
@@ -49,7 +51,24 @@ public class MainTest
         event.reply("Pong!").setEphemeral(true).queue();
     }
 
-    // /time command which response with the time a Member is joined the server!
+    // this creates a command group /moderation with the subcommand ban:
+    // /moderation ban <user> [<reason>]
+    @CmdGroup(name = "moderation", description = "Moderation commands")
+    public static class Moderation
+    {
+        @OnCommand(name = "ban", description = "Ban a user", options = {
+                @CmdOption(name = "user", description = "who?", type = OptionType.USER, required = true),
+                @CmdOption(name = "reason", description = "why?", type = OptionType.STRING)
+        })
+        public static void ban(SlashCommandInteractionEvent event)
+        {
+            Member member = event.getOption("user", OptionMapping::getAsMember);
+            String reason = event.getOption("reason", OptionMapping::getAsString);
+            member.ban(7, TimeUnit.DAYS).reason(reason).queue();
+        }
+    }
+
+    // /time <user> command which response with the time a Member is joined the server!
     @OnCommand(name = "time", description = "when did a user  join!", options = {
             @CmdOption(name = "user", description = "who?", type = OptionType.USER, required = true)
     })
@@ -220,7 +239,8 @@ public class MainTest
     }
 
     @OnModal(id = "something-{}-{}")
-    public static void something(ModalInteractionEvent event, String[] params) {
+    public static void something(ModalInteractionEvent event, String[] params)
+    {
         String firstCurlyBraces = params[0]; // this should be the content of the first curly braces
         String secondCurlyBraces = params[1]; // this should be the content of the second curly braces
     }

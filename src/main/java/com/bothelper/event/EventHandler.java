@@ -16,9 +16,11 @@ import net.dv8tion.jda.api.events.interaction.component.StringSelectInteractionE
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.session.ReadyEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.interactions.commands.Command;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
+import net.dv8tion.jda.api.interactions.commands.build.SubcommandData;
 import org.jetbrains.annotations.NotNull;
 import org.reflections.Reflections;
 import org.reflections.scanners.Scanners;
@@ -86,10 +88,18 @@ public class EventHandler extends ListenerAdapter
         List<SlashCommandData> data = new ArrayList<>();
         for (Method method : commandMethods)
         {
+            CmdGroup classAnnotation = method.getDeclaringClass().getAnnotation(CmdGroup.class);
             OnCommand annotation = method.getAnnotation(OnCommand.class);
             if (annotation.options().length == 0)
             {
-                data.add(Commands.slash(annotation.name(), annotation.description()));
+                if (classAnnotation != null)
+                {
+                    data.add(Commands.slash(classAnnotation.name(), classAnnotation.description())
+                            .addSubcommands(new SubcommandData(annotation.name(), annotation.description())));
+                } else
+                {
+                    data.add(Commands.slash(annotation.name(), annotation.description()));
+                }
             } else
             {
                 List<OptionData> options = new ArrayList<>();
@@ -97,7 +107,15 @@ public class EventHandler extends ListenerAdapter
                 {
                     options.add(new OptionData(option.type(), option.name(), option.description(), option.required()));
                 }
-                data.add(Commands.slash(annotation.name(), annotation.description()).addOptions(options));
+
+                if (classAnnotation != null)
+                {
+                    data.add(Commands.slash(classAnnotation.name(), classAnnotation.description())
+                            .addSubcommands(new SubcommandData(annotation.name(), annotation.description()).addOptions(options)));
+                } else
+                {
+                    data.add(Commands.slash(annotation.name(), annotation.description()).addOptions(options));
+                }
             }
 
         }

@@ -18,6 +18,7 @@ import net.dv8tion.jda.api.utils.data.DataObject;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
@@ -32,7 +33,24 @@ public class Bot
     public static JDA bot;
     public static String token;
 
-    public static void startBot(String token) throws InterruptedException
+    public static void startBot(String token, Activity activity) throws InterruptedException
+    {
+        runBot(token, OnlineStatus.ONLINE, activity, ChunkingFilter.ALL, MemberCachePolicy.ALL,
+                GatewayIntent.GUILD_MEMBERS,
+                GatewayIntent.GUILD_PRESENCES,
+                GatewayIntent.GUILD_VOICE_STATES,
+                GatewayIntent.DIRECT_MESSAGE_TYPING,
+                GatewayIntent.DIRECT_MESSAGES,
+                GatewayIntent.MESSAGE_CONTENT,
+                GatewayIntent.GUILD_INVITES);
+    }
+
+    public static void startBot(String token, OnlineStatus status, Activity activity, ChunkingFilter filter, MemberCachePolicy memberCachePolicy, GatewayIntent... gatewayIntents) throws InterruptedException
+    {
+        runBot(token, status, activity, filter, memberCachePolicy, gatewayIntents);
+    }
+
+    private static void runBot(String token, OnlineStatus status, Activity activity, ChunkingFilter filter, MemberCachePolicy memberCachePolicy, GatewayIntent... gatewayIntents) throws InterruptedException
     {
         Bot.token = token;
         if (isRunning())
@@ -42,18 +60,12 @@ public class Bot
         }
 
         bot = JDABuilder.createDefault(token)
-                .setStatus(OnlineStatus.ONLINE) // optional
-                .setActivity(Activity.playing("nothing")) //optional
-                .setChunkingFilter(ChunkingFilter.ALL)
-                .setMemberCachePolicy(MemberCachePolicy.ALL)
+                .setStatus(status) // optional
+                .setActivity(activity) //optional
+                .setChunkingFilter(filter)
+                .setMemberCachePolicy(memberCachePolicy)
                 .enableIntents(
-                        GatewayIntent.GUILD_MEMBERS,
-                        GatewayIntent.GUILD_PRESENCES,
-                        GatewayIntent.GUILD_VOICE_STATES,
-                        GatewayIntent.DIRECT_MESSAGE_TYPING,
-                        GatewayIntent.DIRECT_MESSAGES,
-                        GatewayIntent.MESSAGE_CONTENT,
-                        GatewayIntent.GUILD_INVITES
+                        Arrays.asList(gatewayIntents)
                 )
                 .addEventListeners(
                         new EventHandler()
