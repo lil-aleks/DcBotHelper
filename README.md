@@ -33,14 +33,14 @@ When creating a bot at the [Discord Developer Portal](https://discord.com/develo
 #### Prepared method
 You can start your bot using the following method:
 ```java 
-Bot.startBot(YOUR_TOKEN_HERE); // Enter your token
+Bot.startBot(YOUR_TOKEN_HERE, Activity); // Enter your token and a Activity
 ```
 #### Custom method
 Or create your own method and add the EventHandler to the EventListeners.
 ```java
 JDA bot = JDABuilder.createDefault(YOUR_TOKEN_HERE) // Enter your token
-    .setStatus(OnlineStatus.ONLINE) // optional
-    .setActivity(Activity.playing("nothing")) //optional
+    .setStatus(OnlineStatus.ONLINE)
+    .setActivity(Activity.playing("nothing")) 
     .setChunkingFilter(ChunkingFilter.ALL)
     .setMemberCachePolicy(MemberCachePolicy.ALL)
     .enableIntents(
