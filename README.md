@@ -12,7 +12,7 @@ If you're using Maven, add the following to your pom.xml:
 <dependency>
     <groupId>net.dv8tion</groupId>
     <artifactId>JDA</artifactId>
-    <version>5.1.1</version>
+    <version>5.2.2</version>
 </dependency>
 <dependency>
     <groupId>org.reflections</groupId>
