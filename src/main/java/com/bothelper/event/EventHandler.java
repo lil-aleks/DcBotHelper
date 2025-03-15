@@ -1,6 +1,8 @@
 package com.bothelper.event;
 
 import com.bothelper.event.interaction.*;
+import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.guild.GuildJoinEvent;
 import net.dv8tion.jda.api.events.guild.GuildLeaveEvent;
 import net.dv8tion.jda.api.events.guild.invite.GuildInviteCreateEvent;
@@ -16,7 +18,6 @@ import net.dv8tion.jda.api.events.interaction.component.StringSelectInteractionE
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.session.ReadyEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import net.dv8tion.jda.api.interactions.commands.Command;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import net.dv8tion.jda.api.interactions.commands.build.SlashCommandData;
@@ -26,13 +27,17 @@ import org.reflections.Reflections;
 import org.reflections.scanners.Scanners;
 import org.reflections.util.*;
 
-import java.lang.reflect.*;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class EventHandler extends ListenerAdapter
 {
@@ -123,6 +128,7 @@ public class EventHandler extends ListenerAdapter
                 data
         ).queue();
 
+
         for (Method method : readyMethods)
         {
             try
@@ -135,14 +141,39 @@ public class EventHandler extends ListenerAdapter
         }
     }
 
+    public boolean hasRoleOrPermission(Member member, List<String> roles, List<Permission> permissions)
+    {
+        for (String roleId : roles)
+        {
+            if (member.getRoles().contains(member.getGuild().getRoleById(roleId)))
+                return true;
+        }
+        return member.hasPermission(permissions);
+    }
+
     @Override
     public void onSlashCommandInteraction(@NotNull SlashCommandInteractionEvent event)
     {
         for (Method method : commandMethods)
         {
+            CmdGroup classAnnotation = method.getDeclaringClass().getAnnotation(CmdGroup.class);
             OnCommand annotation = method.getAnnotation(OnCommand.class);
-            if (!annotation.name().equals(event.getName()))
-                continue;
+
+            if (classAnnotation != null && classAnnotation.name().equals(event.getName()))
+            {
+                if (!annotation.name().equals(event.getSubcommandName()))
+                    continue;
+                List<String> roles = Stream.concat(Arrays.stream(classAnnotation.allowedRoles()), Arrays.stream(annotation.allowedRoles())).collect(Collectors.toList());
+                if (!hasRoleOrPermission(event.getMember(), roles, Stream.concat(Arrays.stream(classAnnotation.allowedPermissions()), Arrays.stream(annotation.allowedPermissions())).collect(Collectors.toList())))
+                    return;
+
+            } else
+            {
+                if (!annotation.name().equals(event.getName()))
+                    continue;
+                if (!hasRoleOrPermission(event.getMember(), List.of(annotation.allowedRoles()), List.of(annotation.allowedPermissions())))
+                    return;
+            }
 
             try
             {
@@ -247,7 +278,10 @@ public class EventHandler extends ListenerAdapter
                 continue;
             try
             {
-                if (args.length == 1)
+                if (args == null)
+                {
+                    method.invoke(null, event);
+                } else if (args.length == 1)
                 {
                     method.invoke(null, event, args[0]);
                 } else

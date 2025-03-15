@@ -34,6 +34,7 @@ import java.util.concurrent.TimeUnit;
 
 public class MainTest
 {
+
     public static void main(String[] args) throws InterruptedException, IOException
     {
         String token;
@@ -42,6 +43,7 @@ public class MainTest
             token = reader.readLine();
         }
         Bot.startBot(token, Activity.of(Activity.ActivityType.PLAYING, "with DBH 🤖"));
+
     }
 
     // /ping command which response with "Pong"!

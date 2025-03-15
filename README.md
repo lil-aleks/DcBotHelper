@@ -4,7 +4,7 @@ This library helps you build your own Discord bot faster!
 Unfortunately, we do not yet support implementation via Maven or Gradle. However, you can add the JAR file to your project via our releases and use the DiscordBotHelper.
 ### IntelliJ
 #### Download and add to project
-First, download the JAR here: [Latest Release](https://github.com/lil-aleks/DcBotHelper/releases/latest)
+First, download the JAR here: [Latest Release](https://github.com/lil-aleks/DcBotHelper/releases/latest).
 Now create a folder called “libs” and paste the JAR there. That folder should be in your project root.
 #### Adding necessary dependencies
 If you're using Maven, add the following to your pom.xml:
@@ -12,7 +12,7 @@ If you're using Maven, add the following to your pom.xml:
 <dependency>
     <groupId>net.dv8tion</groupId>
     <artifactId>JDA</artifactId>
-    <version>5.2.2</version>
+    <version>5.3.0</version>
 </dependency>
 <dependency>
     <groupId>org.reflections</groupId>
